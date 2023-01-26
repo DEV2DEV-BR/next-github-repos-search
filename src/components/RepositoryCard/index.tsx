@@ -1,15 +1,20 @@
+import { RepositoryType } from "@/Types/RepositoryType";
 import styles from "./styles.module.scss";
 
-export default function Repositorycard() {
+interface IProps {
+  repository: RepositoryType;
+}
+
+export default function Repositorycard({ repository }: IProps) {
   return (
     <div className={styles.container}>
       <div>
-        <h2>Internet History</h2>
-        <span>Public</span>
-        <span>Javascript</span>
+        <h2>{repository.name}</h2>
+        <span>{repository.visibility}</span>
+        <span>{repository.language}</span>
       </div>
 
-      <strong>1 Stars</strong>
+      <strong>{repository.stargazers_count} Stars</strong>
     </div>
   );
 }

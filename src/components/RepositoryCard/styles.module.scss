@@ -17,6 +17,15 @@
     flex-direction: column;
     align-items: center;
 
+    h1 {
+      width: 188px;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+    }
+
     span {
       font-style: normal;
       font-weight: 400;
