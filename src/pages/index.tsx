@@ -1,7 +1,8 @@
 import Repositorycard from "@/components/RepositoryCard";
 import styles from "@/styles/Home.module.scss";
 import { RepositoryType } from "@/Types/RepositoryType";
-import { capitalize } from "@/utils/formatters";
+import { capitalize, formatRepoName } from "@/utils/formatters";
+import { GetStaticProps } from "next";
 import Image from "next/image";
 
 interface IProps {
@@ -35,25 +36,19 @@ export default function Home(props: IProps) {
   );
 }
 
-export async function getStaticProps() {
+// export const getServerSideProps: GetServerSideProps<{ data: Data }> = async () => {
+
+export const getStaticProps: GetStaticProps<{
+  repositories: RepositoryType[];
+}> = async () => {
   const response = await fetch(`https://api.github.com/orgs/dev2dev-br/repos`);
   const repositories: RepositoryType[] = await response.json();
 
-  for (const repository of repositories) {
-    const names = repository.name.split("-");
-
-    let formattedName = "";
-
-    for (const name of names) {
-      formattedName += `${capitalize(name)} `;
-    }
-
-    repository.name = formattedName;
-  }
+  const formattedRepositories = formatRepoName(repositories);
 
   return {
     props: {
-      repositories,
+      repositories: formattedRepositories,
       date: new Date().toLocaleDateString("pt-br", {
         hour: "2-digit",
         minute: "2-digit",
@@ -62,4 +57,4 @@ export async function getStaticProps() {
     },
     revalidate: 60,
   };
-}
+};
