@@ -4,6 +4,7 @@ import { RepositoryType } from "@/Types/RepositoryType";
 import { capitalize, formatRepoName } from "@/utils/formatters";
 import { GetStaticProps } from "next";
 import Image from "next/image";
+import Link from "next/link";
 
 interface IProps {
   repositories: Array<RepositoryType>;
@@ -26,6 +27,9 @@ export default function Home(props: IProps) {
         />
         <h1>DEV2DEV</h1>
         <span>Atualizado em: {date}</span>
+        <Link href={"/search-repository"}>
+          <button>Buscar repositório</button>
+        </Link>
       </header>
       <main className={styles.main}>
         {repositories.map((repository) => (
@@ -35,8 +39,6 @@ export default function Home(props: IProps) {
     </div>
   );
 }
-
-// export const getServerSideProps: GetServerSideProps<{ data: Data }> = async () => {
 
 export const getStaticProps: GetStaticProps<{
   repositories: RepositoryType[];

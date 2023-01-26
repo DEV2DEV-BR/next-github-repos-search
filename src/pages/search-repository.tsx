@@ -13,11 +13,12 @@ export default function SearchRepository() {
   const [searchDate, setSearchDate] = useState("");
 
   async function searchCompanyAndRepos() {
+    setRepositories([]);
+    setCurrentCompany(null);
+
     if (!inputSearch) {
       return;
     }
-
-    setRepositories([]);
 
     const companyResponse = await fetch(
       `https://api.github.com/users/${inputSearch}`
