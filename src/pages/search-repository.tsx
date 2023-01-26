@@ -1,121 +1,125 @@
-import Head from "next/head";
+import Repositorycard from "@/components/RepositoryCard";
+import styles from "@/styles/SearchRepository.module.scss";
+import { CompanyType } from "@/Types/CompanyType";
+import { RepositoryType } from "@/Types/RepositoryType";
+import { capitalize, formatRepoName } from "@/utils/formatters";
 import Image from "next/image";
-import { Inter } from "@next/font/google";
-import styles from "@/styles/Home.module.scss";
+import { useEffect, useState } from "react";
 
-const inter = Inter({ subsets: ["latin"] });
+export default function SearchRepository() {
+  const [respositories, setRepositories] = useState<Array<RepositoryType>>([]);
+  const [currentCompany, setCurrentCompany] = useState<CompanyType | null>();
+  const [inputSearch, setInputSearch] = useState("");
+  const [searchDate, setSearchDate] = useState("");
 
-export default function Home() {
+  async function searchCompanyAndRepos() {
+    if (!inputSearch) {
+      return;
+    }
+
+    setRepositories([]);
+
+    const companyResponse = await fetch(
+      `https://api.github.com/users/${inputSearch}`
+    );
+
+    const { login, avatar_url }: CompanyType = await companyResponse.json();
+
+    if (!login) {
+      setCurrentCompany(null);
+    }
+
+    setCurrentCompany({ login, avatar_url });
+  }
+
+  useEffect(() => {
+    if (!currentCompany) {
+      return;
+    }
+
+    async function loadRepos() {
+      const reposResponse = await fetch(
+        `https://api.github.com/orgs/${currentCompany?.login}/repos`
+      );
+
+      setSearchDate(
+        new Date().toLocaleDateString("pt-br", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        })
+      );
+
+      if (reposResponse.status !== 200) {
+        return;
+      }
+
+      const reposData: Array<RepositoryType> = await reposResponse.json();
+
+      const formattedRepositories = formatRepoName(reposData);
+
+      setRepositories([...formattedRepositories]);
+
+      setInputSearch("");
+    }
+
+    loadRepos();
+  }, [currentCompany]);
+
   return (
-    <>
-      <Head>
-        <input type="text" placeholder="Digite o nome da organização" />
-        <button>Buscar</button>
-      </Head>
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <input
+          type="text"
+          placeholder="Digite o nome da organização"
+          onChange={(event) => setInputSearch(event.target.value)}
+          onKeyDown={(event) =>
+            event.key === "Enter" && searchCompanyAndRepos()
+          }
+        />
+        <button onClick={searchCompanyAndRepos}>Buscar</button>
+      </header>
       <main className={styles.main}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>pages/index.tsx</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{" "}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
-        </div>
-
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-          <div className={styles.thirteen}>
+        {currentCompany && (
+          <div className={styles["company-information"]}>
             <Image
-              src="/thirteen.svg"
-              alt="13"
-              width={40}
-              height={31}
+              src={currentCompany.avatar_url}
+              alt="DEV2DEV LOGO"
+              className={styles.logo}
+              width={84}
+              height={84}
               priority
             />
+            <div>
+              <h1>{currentCompany.login}</h1>
+              <span>Buscado em: {searchDate}</span>
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
+        {currentCompany ? (
+          <div className={styles["repo-container"]}>
+            {respositories.length ? (
+              respositories.map((repository) => (
+                <Repositorycard repository={repository} key={repository.id} />
+              ))
+            ) : (
+              <h1>Não foi possível listar os respositórios!</h1>
+            )}
+          </div>
+        ) : (
+          <div className={styles["not-found"]}>
+            <Image
+              src="/avatar.svg"
+              alt="company not found"
+              width={289}
+              height={289}
+              priority
+            />
+            <h1>Organização não encontrada!</h1>
+          </div>
+        )}
       </main>
-    </>
+    </div>
   );
 }
