@@ -1,4 +1,5 @@
-import styles from "@/styles/Home.module.css";
+import Repositorycard from "@/components/RepositoryCard";
+import styles from "@/styles/Home.module.scss";
 import Image from "next/image";
 
 export default function Home() {
@@ -15,7 +16,9 @@ export default function Home() {
         />
         <h1>DEV2DEV</h1>
       </header>
-      <main className={styles.main}></main>
+      <main className={styles.main}>
+        <Repositorycard />
+      </main>
     </>
   );
 }

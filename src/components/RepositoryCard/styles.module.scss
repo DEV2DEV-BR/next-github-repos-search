@@ -1,0 +1,46 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 231px;
+  height: 222px;
+  padding: 32px 16px;
+
+  background: #ffffff;
+  color: #131e30;
+  border-radius: 20px;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    span {
+      font-style: normal;
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 23px;
+      text-align: center;
+      font-size: 18px;
+      margin: 12px 0 11px 0;
+
+      &:last-of-type {
+        line-height: 18px;
+        font-size: 14px;
+        margin: 0;
+      }
+    }
+  }
+
+  strong {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 23px;
+    text-align: center;
+
+    color: #000000;
+  }
+}
