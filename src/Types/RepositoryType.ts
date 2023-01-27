@@ -4,4 +4,6 @@ export type RepositoryType = {
   language: string;
   visibility: "private" | "public";
   stargazers_count: number;
+  html_url: string;
+  default_branch: string;
 };

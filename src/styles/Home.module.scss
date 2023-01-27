@@ -13,26 +13,12 @@
 
 .header {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 16px;
+  justify-content: space-between;
 
   width: 100vw;
   max-width: 1440px;
 
-  padding: 32px 0px;
-
-  position: relative;
-
-  > a {
-    button {
-      width: 289px;
-      position: absolute;
-      right: 88px;
-      top: 40px;
-    }
-  }
+  padding: 32px 64px;
 }
 
 .logo {
@@ -42,6 +28,19 @@
 }
 
 .main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container-infos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.container-repos {
   display: flex;
   gap: 32px;
 

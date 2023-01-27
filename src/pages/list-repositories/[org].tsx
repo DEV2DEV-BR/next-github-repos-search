@@ -29,9 +29,6 @@ export default function Home(props: IProps) {
         />
         <h1>{company.login}</h1>
         <span>Atualizado em: {date}</span>
-        <Link href={"/search-repository"}>
-          <button>Buscar repositório</button>
-        </Link>
       </header>
       <main className={styles.main}>
         {company ? (
@@ -64,13 +61,23 @@ export default function Home(props: IProps) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   if (context.params?.org) {
     const companyResponse = await fetch(
-      `https://api.github.com/users/${context.params.org}`
+      `https://api.github.com/users/${context.params.org}`,
+      {
+        headers: {
+          Authorization: "Bearer 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",
+        },
+      }
     );
 
     const { login, avatar_url }: CompanyType = await companyResponse.json();
 
     const response = await fetch(
-      `https://api.github.com/orgs/${context.params.org}/repos`
+      `https://api.github.com/orgs/${context.params.org}/repos`,
+      {
+        headers: {
+          Authorization: "Bearer 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",
+        },
+      }
     );
 
     let formattedRepositories: RepositoryType[] = [];

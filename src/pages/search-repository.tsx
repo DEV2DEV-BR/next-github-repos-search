@@ -1,8 +1,9 @@
+import Nav from "@/components/Nav";
 import Repositorycard from "@/components/RepositoryCard";
 import styles from "@/styles/SearchRepository.module.scss";
 import { CompanyType } from "@/Types/CompanyType";
 import { RepositoryType } from "@/Types/RepositoryType";
-import { capitalize, formatRepoName } from "@/utils/formatters";
+import { formatRepoName } from "@/utils/formatters";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -21,7 +22,12 @@ export default function SearchRepository() {
     }
 
     const companyResponse = await fetch(
-      `https://api.github.com/users/${inputSearch}`
+      `https://api.github.com/users/${inputSearch}`,
+      {
+        headers: {
+          Authorization: "Bearer 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",
+        },
+      }
     );
 
     const { login, avatar_url }: CompanyType = await companyResponse.json();
@@ -40,7 +46,12 @@ export default function SearchRepository() {
 
     async function loadRepos() {
       const reposResponse = await fetch(
-        `https://api.github.com/orgs/${currentCompany?.login}/repos`
+        `https://api.github.com/orgs/${currentCompany?.login}/repos`,
+        {
+          headers: {
+            Authorization: "Bearer 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",
+          },
+        }
       );
 
       setSearchDate(
@@ -70,17 +81,20 @@ export default function SearchRepository() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <input
-          type="text"
-          placeholder="Digite o nome da organização"
-          onChange={(event) => setInputSearch(event.target.value)}
-          onKeyDown={(event) =>
-            event.key === "Enter" && searchCompanyAndRepos()
-          }
-        />
-        <button onClick={searchCompanyAndRepos}>Buscar</button>
+        <Nav />
       </header>
       <main className={styles.main}>
+        <div className={styles["container-search"]}>
+          <input
+            type="text"
+            placeholder="Digite o nome da organização"
+            onChange={(event) => setInputSearch(event.target.value)}
+            onKeyDown={(event) =>
+              event.key === "Enter" && searchCompanyAndRepos()
+            }
+          />
+          <button onClick={searchCompanyAndRepos}>Buscar</button>
+        </div>
         {currentCompany && (
           <div className={styles["company-information"]}>
             <Image
