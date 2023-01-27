@@ -69,6 +69,21 @@ export const getStaticProps: GetStaticProps<{
   };
 };
 
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   const response = await fetch(`https://api.github.com/orgs/dev2dev-br/repos`, {
+//     headers: {
+//       Authorization: "Bearer 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",
+//     },
+//   });
+//   const repositories: RepositoryType[] = await response.json();
+
+//   const paths = repositories.map((repository) => ({
+//     params: { name: repository.name.toString() },
+//   }));
+
+//   return { paths, fallback: false };
+// };
+
 export const getStaticPaths: GetStaticPaths = async () => {
   const response = await fetch(`https://api.github.com/orgs/dev2dev-br/repos`, {
     headers: {
@@ -77,7 +92,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
   });
   const repositories: RepositoryType[] = await response.json();
 
-  const paths = repositories.map((repository) => ({
+  const formattedRepositories = formatRepoName(repositories);
+
+  const paths = formattedRepositories.map((repository) => ({
     params: { name: repository.name.toString() },
   }));
 
